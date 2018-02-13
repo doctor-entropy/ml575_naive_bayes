@@ -1,5 +1,5 @@
 # ml575_naive_bayes
-Machine Learning project, Naive Bayes classifier without libraries
+Machine Learning project, Implementing Naive Bayes classifier without libraries
 
 #### Resources
 
