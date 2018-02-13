@@ -1,3 +1,4 @@
+# Importing all required libraries
 import numpy as np
 import pandas as pd
 from pandas import Series, DataFrame
@@ -10,12 +11,15 @@ from tqdm import tqdm
 import copy
 import time
 
+# Getting lables
 output_labels = glob.glob('20_newsgroups/*')
 
+# Getting paths for processing
 data_paths = glob.glob('20_newsgroups/*/*')
 
 print "Processing Data, Please wait \n"
 
+# Preprocessing data
 data_collection = []
 source_news = []
 for data in data_paths:
@@ -39,12 +43,15 @@ for data in data_paths:
     else:
         data_collection.append('')
 
+# Converting the preprocessed data into frequency matrix
 count_vector = CountVectorizer(lowercase=True, decode_error='ignore', stop_words='english', max_features = 2000)
 count_vector.fit(data_collection)
 frequency_matrix = pd.DataFrame(count_vector.transform(data_collection).toarray())
 
+# Splitting into training and testing data
 x_train, x_test, y_train, y_test = train_test_split(frequency_matrix, source_news, random_state = 42)
 
+# Defining function to perform two class classification, arguements sent are classes you want to predict
 def two_class_prediction(class1, class2):
     print "Class 1:", class1
     print "Class 2:", class2
@@ -52,6 +59,7 @@ def two_class_prediction(class1, class2):
     n_class2 = 0
     class1_count = 0
     class2_count = 0
+    # Getting the frequency of occurence of each class
     for k,y in enumerate(y_train):
         if(class1 in y ):
             class1_count += x_train.iloc[k]
@@ -72,6 +80,7 @@ def two_class_prediction(class1, class2):
     accuracy_score = 0.0
     time.sleep(1.0)
     
+    # Calculating the probabilty of which class the dataset belongs to
     for index, y in tqdm(enumerate(y_test)):
         if(class1 in y or class2 in y):
             p_a_class1 = 1.00 * 10**308
@@ -86,7 +95,8 @@ def two_class_prediction(class1, class2):
             n = n+1
             
     time.sleep(1.0)
-        
+
+    # Calculating the accuracy of two groups involved (Accuracy is the metric because the classes are almost evenly split)
     accuracy = float(accuracy_score)/n
     print "Accuracy of Prediciton:", accuracy*100, '% \n'
     return
@@ -99,6 +109,7 @@ two_class_prediction('rec.autos', 'sci.space')
 two_class_prediction('rec.motorcycles', 'rec.autos')
 two_class_prediction('sci.med', 'rec.sport.baseball')
 
+# Function for three class classification
 def three_class_prediction(class1, class2, class3):
     print "Class 1:", class1
     print "Class 2:", class2
